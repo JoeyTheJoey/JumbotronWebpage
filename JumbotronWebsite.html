@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="JumbotronWebsite.css">
+    <link rel="stylesheet" href="BackgroundImage.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone.min.js"></script>
+    <script src="JumbotronWebsite.js" defer></script>
+
+    <title>Countdown Timer</title>
+</head>
+
+<body>
+    
+    <div id="image-container">
+        <img src="Logo.png" alt="Launch Logo" id="image">
+    </div>
+
+    <div id="color-box" class="background-black"></div>
+
+    <div id="countdown">
+        Countdown Timer: 00:00 <!-- Displayed format: minutes:seconds -->
+    </div>
+    <audio id="audio-cue-black" src="BLACK_TO_ORANGE.mp3" preload="auto"></audio>></audio>
+    <audio id="audio-cue-orange" src="ORANGE_TO_SILVER.mp3" preload="auto"></audio>
+    <audio id="audio-cue-silver" src="SILVER_TO_PINK.mp3" preload="auto"></audio>
+    <audio id="audio-cue-pink" src="PINK_TO_BLUE.mp3" preload="auto"></audio>
+    <audio id="audio-cue-blue" src="BLUE_TO_GOLD.mp3" preload="auto"></audio>
+    <audio id="audio-cue-gold" src="GOLD_TO_PURPLE.mp3" preload="auto"></audio>
+    <audio id="audio-cue-purple" src="PURPLE_TO_YELLOW.mp3" preload="auto"></audio>
+    <audio id="audio-cue-yellow" src="YELLOW_TO_RED.mp3" preload="auto"></audio>
+    <audio id="audio-cue-red" src="RED_TO_GREEN.mp3" preload="auto"></audio>
+    <audio id="audio-cue-green" src="GREEN_TO_BLACK.mp3" preload="auto"></audio>
+
+    <audio id="reset-audio" src="reset-sound-cue.wav" preload="auto"></audio>
+
+</body>
+</html>

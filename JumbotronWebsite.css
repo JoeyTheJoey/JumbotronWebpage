@@ -1,0 +1,241 @@
+/* Apply styles to the countdown timer section */
+#countdown {
+    text-align: center;
+    font-family: Futura PT, sans-serif;
+    font-weight: bold;
+    font-size: 180px;
+    color: white;
+    position: fixed;
+    top: calc(50% + 100px); 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1; 
+}
+
+#countdown p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#countdown span {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+/* Style the audio element */
+#audio-cue {
+    display: none; /* Hide the audio element */
+}
+
+/* for logo */
+#image-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: fixed;
+    top: calc(50% - 400px); /* Adjust the distance above the color box */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2; /* Ensure it's above the color box and countdown timer */
+}
+
+/* for logo */
+#image {
+    width: 350px; /* Set a fixed width for the logo */
+    height: auto;
+    margin: 0;
+}
+
+body {
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#color-box {
+    width: 200px;
+    height: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+    text-shadow:
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        1px 1px 0 black;
+    font-family: Futura, sans-serif;
+    font-size: 24px;
+    font-weight: normal;
+    color: white;
+}
+
+/* Styling for different colors */
+.background-black {
+    background-color: black;
+}
+
+.background-orange {
+    background-color: orange;
+}
+
+.background-silver {
+    background-color: silver;
+}
+
+.background-pink {
+    background-color: pink;
+}
+
+.background-blue {
+    background-color: blue;
+}
+
+.background-gold {
+    background-color: gold;
+}
+
+.background-purple {
+    background-color: purple;
+}
+
+.background-yellow {
+    background-color: yellow;
+}
+
+.background-red {
+    background-color: red;
+}
+
+.background-green {
+    background-color: green;
+}
+
+
+/*
+
+#countdown {
+    text-align: center;
+    font-family: Futura, sans-serif;
+    font-weight: bold;
+    font-size: 180px;
+    color: white;
+    position: fixed;
+    top: calc(50% + 100px); 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+#countdown p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#countdown span {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+
+#audio-cue {
+    display: none; 
+}
+
+
+#image-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    position: fixed;
+    top: calc(50% - 400px); 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2; 
+}
+
+#image {
+    width: 40%;
+    height: auto;
+    margin: 0;
+}
+
+body {
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#color-box {
+    width: 200px;
+    height: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+    text-shadow:
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        1px 1px 0 black;
+    font-family: Futura, sans-serif;
+    font-size: 24px;
+    font-weight: normal;
+    color: white;
+}
+
+.background-black {
+    background-color: black;
+}
+
+.background-orange {
+    background-color: orange;
+}
+
+.background-silver {
+    background-color: silver;
+}
+
+.background-pink {
+    background-color: pink;
+}
+
+.background-blue {
+    background-color: blue;
+}
+
+.background-gold {
+    background-color: gold;
+}
+
+.background-purple {
+    background-color: purple;
+}
+
+.background-yellow {
+    background-color: yellow;
+}
+
+.background-red {
+    background-color: red;
+}
+
+.background-green {
+    background-color: green;
+}
+
+*/
