@@ -30,6 +30,15 @@ function getCurrentColorIndex() {
     return totalIntervalsPassed % colorList.length;
 }
 
+function getPreviousColorIndex(currentIndex) {
+    // If currentIndex is 0, wrap around to the last color in the list
+    return currentIndex === 0 ? colorList.length - 1 : currentIndex - 1;
+}
+
+function getNextColorIndex(currentIndex) {
+    return (currentIndex + 1) % colorList.length;
+}
+
 function updateCountdownDisplay(timeRemaining) {
     const minutes = Math.floor(timeRemaining / (1000 * 60));
     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
@@ -47,6 +56,21 @@ function updateCountdown() {
     const colorBox = document.getElementById('color-box');
     colorBox.className = 'background-' + currentColor;
     colorBox.textContent = currentColor.toUpperCase();
+
+    const previousColorIndex = getPreviousColorIndex(currentColorIndex);
+    const previousColor = colorList[previousColorIndex];
+    // Update the previous color box
+    const previousColorBox = document.getElementById('previous-color-box');
+    previousColorBox.className = 'background-' + previousColor;
+    previousColorBox.textContent = previousColor.toUpperCase();
+
+    const nextColorIndex = getNextColorIndex(currentColorIndex);
+    const nextColor = colorList[nextColorIndex];
+
+     // Update the next color box
+     const nextColorBox = document.getElementById('next-color-box');
+     nextColorBox.className = 'background-' + nextColor; // This assumes you have background-color classes set up like your current color box
+     nextColorBox.textContent = nextColor.toUpperCase();
 
     if (timeUntilNextChange <= 1000) {  // 1 second tolerance
         playResetSound();

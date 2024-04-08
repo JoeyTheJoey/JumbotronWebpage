@@ -33,7 +33,7 @@
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     position: fixed;
-    top: calc(50% - 250px); /* Adjust the distance above the color box */
+    top: calc(50% - 275px); /* Adjust the distance above the color box */
     left: 50%;
     transform: translateX(-50%);
     z-index: 2; /* Ensure it's above the color box and countdown timer */
@@ -75,6 +75,58 @@ body {
     font-size: 24px;
     font-weight: normal;
     color: white;
+}
+
+#previous-color-box, #next-color-box {
+    width: 120px; /* Slightly smaller than the current color box */
+    height: 120px;
+    position: fixed;
+    top: 50%; /* Adjust based on the exact placement you want */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+    font-family: Futura, sans-serif;
+    font-size: 20px; /* Slightly smaller font size */
+    font-weight: normal;
+    color: white;
+}
+
+#previous-color-box {
+    left: calc(50% - 220px); /* Adjust as necessary */
+}
+
+#next-color-box {
+    left: calc(50% + 220px); /* Adjust as necessary */
+}
+
+.label {
+    position: fixed;
+    font-family: 'Futura PT', sans-serif;
+    font-weight: bold;
+    font-size: 24px; /* Smaller font size for the labels */
+    color: white;
+    text-align: center;
+    width: 180px; /* Match the width of the color boxes */
+}
+
+#previous-label {
+    left: calc(50% - 310px); /* Align with the previous color box */
+    top: calc(50% - 100px); /* Position above the box */
+}
+
+#current-label {
+    left: 50%;
+    transform: translateX(-50%); /* Center */
+    top: calc(50% - 140px); /* Position above the box */
+}
+
+#next-label {
+    left: calc(50% + 130px); /* Align with the next color box */
+    top: calc(50% - 100px); /* Position above the box */
 }
 
 /* Styling for different colors */
