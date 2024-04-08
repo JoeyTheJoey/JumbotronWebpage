@@ -71,9 +71,9 @@ body {
         1px -1px 0 black,
         -1px 1px 0 black,
         1px 1px 0 black;
-    font-family: Futura, sans-serif;
-    font-size: 24px;
-    font-weight: normal;
+    font-family: 'Futura PT', sans-serif;
+    font-size: 32px;
+    font-weight: bold;
     color: white;
 }
 
@@ -89,9 +89,9 @@ body {
     align-items: center;
     border: 2px solid white;
     text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-    font-family: Futura, sans-serif;
-    font-size: 20px; /* Slightly smaller font size */
-    font-weight: normal;
+    font-family: 'Futura PT', sans-serif;
+    font-size: 24px; /* Slightly smaller font size */
+    font-weight: bold;
     color: white;
 }
 
@@ -106,7 +106,7 @@ body {
 .label {
     position: fixed;
     font-family: 'Futura PT', sans-serif;
-    font-weight: bold;
+    font-weight: normal;
     font-size: 24px; /* Smaller font size for the labels */
     color: white;
     text-align: center;
