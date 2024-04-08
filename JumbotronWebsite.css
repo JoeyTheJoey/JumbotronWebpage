@@ -33,7 +33,7 @@
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     position: fixed;
-    top: calc(50% - 400px); /* Adjust the distance above the color box */
+    top: calc(50% - 250px); /* Adjust the distance above the color box */
     left: 50%;
     transform: translateX(-50%);
     z-index: 2; /* Ensure it's above the color box and countdown timer */
