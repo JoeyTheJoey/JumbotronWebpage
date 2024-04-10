@@ -44,60 +44,72 @@ moment.tz.load({
   // This function finds the current active color and the two upcoming colors based on the local time
   function getNextThreeColors(localSchedule) {
     const now = moment();
-    // Filter sessions that have not started yet
-    const futureSessions = localSchedule.filter(session => moment(session.times[0], 'hh:mm a').isAfter(now));
-    // Sort sessions by start time
-    futureSessions.sort((a, b) => moment(a.times[0], 'hh:mm a').diff(moment(b.times[0], 'hh:mm a')));
-    // Take the first three sessions
-    return futureSessions.slice(0, 3);
-}
-
-
+    let upcomingColors = [];
   
-function updateProgressBarsAndTimers(localSchedule) {
-    // Get the next three sessions to be depleted
-    let nextThreeSessions = getNextThreeColors(localSchedule);
-    // Sort the sessions based on start times
-    nextThreeSessions.sort((a, b) => moment(a.times[0], 'hh:mm a').diff(moment(b.times[0], 'hh:mm a')));
-    // Get the current time
-    const now = moment();
+    // Flatten all times and colors into a single array
+    let allTimes = [];
+    localSchedule.forEach(session => {
+      session.times.forEach(time => {
+        allTimes.push({ time: moment(time, 'hh:mm a'), color: session.color });
+      });
+    });
   
-    // Iterate through the next three sessions
-    for (let i = 0; i < nextThreeSessions.length; i++) {
-        const session = nextThreeSessions[i];
-        const progressBar = document.getElementById(`progress-bar-${i + 1}`);
-        const timer = document.getElementById(`timer-${i + 1}`);
-        
-        // Calculate the progress bar's width and the remaining time for the current session
-        let sessionStartTime = moment(session.times[0], 'hh:mm a');
-        let sessionEndTime = moment(session.times[1], 'hh:mm a');
-        let totalSessionDuration = sessionEndTime.diff(sessionStartTime);
-        let timeElapsed = now.diff(sessionStartTime);
-        let timeRemaining = sessionEndTime.diff(now);
-        
-        // Check if the session has started
-        if (timeElapsed >= 0) {
-            // Calculate the width of the progress bar (inverse of time elapsed)
-            let width = 100 - ((timeElapsed / totalSessionDuration) * 100);
-            progressBar.style.width = `${width}%`;
-            progressBar.className = `progress-bar background-${session.color}`;
-        
-            // Update the timer with the time remaining in minutes and seconds
-            let duration = moment.duration(timeRemaining);
-            let formattedTime = Math.floor(duration.asMinutes()) + ':' + ('0' + duration.seconds()).slice(-2);
-            timer.textContent = formattedTime;
-        
-            // Go to the next session start time
-            session.times.shift();
-            // If the end of the array is reached, move to the next day
-            if (session.times.length === 0) {
-                session.times = etSchedule[i].etTimes.map(etTime =>
-                moment.tz(etTime, 'HH:mm', 'America/New_York').tz(moment.tz.guess()).add(1, 'days').format('hh:mm a')
-                );
-            }
-        }
+    // Sort the times
+    allTimes.sort((a, b) => a.time.diff(b.time));
+  
+    // Find the next three unique color sessions
+    for (let i = 0; i < allTimes.length; i++) {
+      if (allTimes[i].time.isAfter(now) && !upcomingColors.some(c => c.color === allTimes[i].color)) {
+        // Find the index of the next color session of the same color
+        let nextColorIndex = allTimes.findIndex((t, idx) => t.color === allTimes[i].color && idx > i);
+        let endTime = nextColorIndex !== -1 ? allTimes[nextColorIndex].time : allTimes[i].time.clone().add(1, 'day');
+        upcomingColors.push({
+          ...allTimes[i],
+          endTime: endTime
+        });
+        if (upcomingColors.length === 3) break;
+      }
     }
-}
+  
+    return upcomingColors;
+  }
+  
+  
+  function updateProgressBarsAndTimers(localSchedule) {
+    const now = moment();
+    let nextThreeSessions = getNextThreeColors(localSchedule);
+  
+    // Update the progress bars and timers
+    for (let i = 0; i < nextThreeSessions.length; i++) {
+      const session = nextThreeSessions[i];
+      const progressBar = document.getElementById(`progress-bar-${i + 1}`);
+      const timer = document.getElementById(`timer-${i + 1}`);
+  
+      // Calculate the remaining time for the current session
+      let timeRemaining = session.endTime.diff(now);
+      
+      // Check if the session has already ended
+      if (timeRemaining < 0) {
+        progressBar.style.width = `0%`;
+        timer.textContent = '00:00';
+        continue;
+      }
+  
+      // Calculate the total session duration based on the actual schedule
+      let totalSessionDuration = session.endTime.diff(session.time);
+      let width = (timeRemaining / totalSessionDuration) * 100;
+      progressBar.style.width = `${width}%`;
+      progressBar.className = `progress-bar background-${session.color}`;
+      
+      // Update the timer with the time remaining in minutes and seconds
+      let duration = moment.duration(timeRemaining);
+      let minutes = Math.floor(duration.asMinutes());
+      let seconds = duration.seconds();
+      let formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      timer.textContent = formattedTime;
+    }
+  }
+  
 
   
   // Convert the ET schedule to the local time zone schedule
@@ -107,5 +119,9 @@ function updateProgressBarsAndTimers(localSchedule) {
   updateProgressBarsAndTimers(localSchedule);
   
   // Set an interval to update progress bars and timers every second
-  setInterval(() => updateProgressBarsAndTimers(localSchedule), 1000);
+setInterval(() => {
+    // Convert the ET schedule to the local time zone schedule on each tick in case the local time zone changes (like daylight saving changes)
+    const localSchedule = convertScheduleToLocalTime(etSchedule);
+    updateProgressBarsAndTimers(localSchedule);
+}, 1000);
   
