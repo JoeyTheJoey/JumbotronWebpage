@@ -1,0 +1,89 @@
+/* Apply styles to the countdown timer section */
+#countdown {
+    text-align: center;
+    font-family: Futura PT, sans-serif;
+    font-weight: bold;
+    font-size: 180px;
+    color: white;
+    position: fixed;
+    top: calc(50% + 100px); 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1; 
+}
+
+#countdown p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#countdown span {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+/* for logo */
+#image-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: fixed;
+    top: calc(50% - 275px); /* Adjust the distance above the color box */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2; /* Ensure it's above the color box and countdown timer */
+}
+
+/* for logo */
+#image {
+    width: 350px; /* Set a fixed width for the logo */
+    height: auto;
+    margin: 0;
+}
+
+body {
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #fff;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 30px;
+    transition: width 1s linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    border-radius: 5px 0 0 5px;
+    white-space: nowrap;
+  }
+  
+  .timer {
+    padding: 0 20px;
+    font-family: 'Futura PT', sans-serif;
+  }
+
+.background-black { background-color: #000; }
+.background-orange { background-color: #ffa500; }
+.background-silver { background-color: #c0c0c0; }
+.background-pink { background-color: #ffc0cb; }
+.background-blue { background-color: #0000ff; }
+.background-gold { background-color: #ffd700; }
+.background-purple { background-color: #800080; }
+.background-yellow { background-color: #ffff00; }
+.background-red { background-color: #ff0000; }
+.background-green { background-color: #008000; }
