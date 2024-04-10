@@ -1,7 +1,8 @@
-// Include moment and moment-timezone via CDN for this to work.
 
-// Define your schedule in Eastern Time (ET) since the schedule provided is likely in local time
-const etSchedule = [
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Define your schedule in Eastern Time (ET) since the schedule provided is likely in local time
+  const etSchedule = [
     { color: 'black', etTimes: ['10:30', '13:00', '15:30', '18:00', '20:30', '23:00'] },
     { color: 'orange', etTimes: ['10:45', '13:15', '15:45', '18:15', '20:45', '23:15'] },
     { color: 'silver', etTimes: ['11:00', '13:30', '16:00', '18:30', '21:00', '23:30'] },
@@ -13,115 +14,92 @@ const etSchedule = [
     { color: 'red', etTimes: ['12:30', '15:00', '17:30', '20:00', '22:30', '01:00'] },
     { color: 'green', etTimes: ['12:45', '15:15', '17:45', '20:15', '22:45', '01:15'] },
   ];
-  
- // Load timezone data
-moment.tz.load({
-    zones: [
-      'America/New_York|EST EDT|50 40|0101|1Lz50 1zb0 Op0',
-      'America/Chicago|CST CDT|60 50|0101|1Lz50 1zb0 Op0',
-      'America/Los_Angeles|PST PDT|80 70|0101|1Lz50 1zb0 Op0'
-    ],
-    links: [
-      'America/New_York|America/Toronto',
-      'America/Chicago|America/Mexico_City',
-      'America/Los_Angeles|America/Tijuana'
-    ]
-  });
-  
-  function convertScheduleToLocalTime(etSchedule) {
-    // Determine the local timezone of the user's browser
-    const localTimeZone = moment.tz.guess();
-  
-    // Convert each ET time in the schedule to the local time
-    return etSchedule.map(session => ({
-      color: session.color,
-      times: session.etTimes.map(etTime =>
-        moment.tz(etTime, 'HH:mm', 'America/New_York').tz(localTimeZone).format('hh:mm a')
-      )
-    }));
-  }
-  
+
+    // Load timezone data
+    moment.tz.load({
+        zones: [
+          'America/New_York|EST EDT|50 40|0101|1Lz50 1zb0 Op0',
+          'America/Chicago|CST CDT|60 50|0101|1Lz50 1zb0 Op0',
+          'America/Los_Angeles|PST PDT|80 70|0101|1Lz50 1zb0 Op0'
+        ],
+        links: [
+          'America/New_York|America/Toronto',
+          'America/Chicago|America/Mexico_City',
+          'America/Los_Angeles|America/Tijuana'
+        ]
+      });
+    
+    function convertScheduleToLocalTime(etSchedule) {
+      // Determine the local timezone of the user's browser
+      const localTimeZone = moment.tz.guess();
+    
+      // Convert each ET time in the schedule to the local time
+      return etSchedule.map(session => ({
+        color: session.color,
+        times: session.etTimes.map(etTime =>
+          moment.tz(etTime, 'HH:mm', 'America/New_York').tz(localTimeZone).format('hh:mm a')
+        )
+      }));
+    }
+
+
   // This function finds the current active color and the two upcoming colors based on the local time
   function getNextThreeColors(localSchedule) {
     const now = moment();
     let upcomingColors = [];
-  
-    // Flatten all times and colors into a single array
-    let allTimes = [];
-    localSchedule.forEach(session => {
-      session.times.forEach(time => {
-        allTimes.push({ time: moment(time, 'hh:mm a'), color: session.color });
-      });
-    });
-  
-    // Sort the times
-    allTimes.sort((a, b) => a.time.diff(b.time));
-  
-    // Find the next three unique color sessions
-    for (let i = 0; i < allTimes.length; i++) {
-      if (allTimes[i].time.isAfter(now) && !upcomingColors.some(c => c.color === allTimes[i].color)) {
-        // Find the index of the next color session of the same color
-        let nextColorIndex = allTimes.findIndex((t, idx) => t.color === allTimes[i].color && idx > i);
-        let endTime = nextColorIndex !== -1 ? allTimes[nextColorIndex].time : allTimes[i].time.clone().add(1, 'day');
-        upcomingColors.push({
-          ...allTimes[i],
-          endTime: endTime
-        });
-        if (upcomingColors.length === 3) break;
-      }
-    }
-  
-    return upcomingColors;
-  }
-  
-  
-  function updateProgressBarsAndTimers(localSchedule) {
-    const now = moment();
-    let nextThreeSessions = getNextThreeColors(localSchedule);
-  
-    // Update the progress bars and timers
-    for (let i = 0; i < nextThreeSessions.length; i++) {
-      const session = nextThreeSessions[i];
-      const progressBar = document.getElementById(`progress-bar-${i + 1}`);
-      const timer = document.getElementById(`timer-${i + 1}`);
-  
-      // Calculate the remaining time for the current session
-      let timeRemaining = session.endTime.diff(now);
-      
-      // Check if the session has already ended
-      if (timeRemaining < 0) {
-        progressBar.style.width = `0%`;
-        timer.textContent = '00:00';
-        continue;
-      }
-  
-      // Calculate the total session duration based on the actual schedule
-      let totalSessionDuration = session.endTime.diff(session.time);
-      let width = (timeRemaining / totalSessionDuration) * 100;
-      progressBar.style.width = `${width}%`;
-      progressBar.className = `progress-bar background-${session.color}`;
-      
-      // Update the timer with the time remaining in minutes and seconds
-      let duration = moment.duration(timeRemaining);
-      let minutes = Math.floor(duration.asMinutes());
-      let seconds = duration.seconds();
-      let formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-      timer.textContent = formattedTime;
-    }
-  }
-  
 
-  
-  // Convert the ET schedule to the local time zone schedule
-  const localSchedule = convertScheduleToLocalTime(etSchedule);
-  
-  // Initial update
-  updateProgressBarsAndTimers(localSchedule);
-  
-  // Set an interval to update progress bars and timers every second
-setInterval(() => {
-    // Convert the ET schedule to the local time zone schedule on each tick in case the local time zone changes (like daylight saving changes)
-    const localSchedule = convertScheduleToLocalTime(etSchedule);
-    updateProgressBarsAndTimers(localSchedule);
-}, 1000);
-  
+    // Flatten all times into a single array with their associated colors and times converted to moments.
+    let allTimes = localSchedule.flatMap(session => 
+        session.times.map(time => ({
+            time: moment(time, 'hh:mm a'),
+            color: session.color,
+            endTime: moment(time, 'hh:mm a').add(45, 'minutes') // Assume 45-minute duration for each session.
+        }))
+    );
+
+    // Sort the array by time.
+    allTimes.sort((a, b) => a.time.diff(b.time));
+
+    // Filter for future sessions and limit to the first occurrence of each unique color.
+    upcomingColors = allTimes.filter(session => session.time.isAfter(now) || session.endTime.isAfter(now));
+    let uniqueColors = [];
+    upcomingColors = upcomingColors.filter(session => {
+        if (uniqueColors.includes(session.color)) {
+            return false;
+        } else {
+            uniqueColors.push(session.color);
+            return true;
+        }
+    }).slice(0, 3); // Limit to the next three unique colors.
+
+    return upcomingColors;
+}
+
+function updateProgressBarsAndTimers() {
+    const localSchedule = convertScheduleToLocalTime(etSchedule); // Ensure the schedule is up-to-date.
+    const upcomingColors = getNextThreeColors(localSchedule);
+
+    upcomingColors.forEach((session, index) => {
+        const progressBar = document.getElementById(`progress-bar-${index + 1}`);
+        const timer = document.getElementById(`timer-${index + 1}`);
+        if (!progressBar || !timer) return;
+
+        // Calculate time remaining and width percentage.
+        let now = moment();
+        let timeRemaining = session.endTime.diff(now);
+        let totalSessionDuration = 45 * 60 * 1000;
+        let widthPercentage = Math.max(0, Math.min(100, (timeRemaining / totalSessionDuration) * 100));
+
+        progressBar.style.width = `${widthPercentage}%`;
+        progressBar.className = `progress-bar background-${session.color}`;
+
+        let minutes = Math.floor(timeRemaining / (60 * 1000));
+        let seconds = Math.floor((timeRemaining % (60 * 1000)) / 1000);
+        timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    });
+}
+
+// Initial call and periodic updates.
+updateProgressBarsAndTimers();
+setInterval(updateProgressBarsAndTimers, 1000);
+});

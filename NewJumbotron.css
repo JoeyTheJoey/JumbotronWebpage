@@ -64,27 +64,22 @@ body {
 
 .progress-bar-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%; /* Make them take the full width of the wrapper */
-    color: #fff;
-    background-color: #ddd;
-    border-radius: 5px;
-    overflow: hidden;
+    width: 100%; /* Full width of the container */
+    background-color: #ddd; /* Background of the container, visible as the progress depletes */
+    border-radius: 5px; /* Optional, for rounded corners */
+    overflow: hidden; /* Ensures the progress bar does not overflow the container */
 }
 
-
-  .progress-bar {
-    height: 30px;
-    transition: width 1s linear;
+.progress-bar {
+    height: 50px; /* Full height of the container */
+    transition: width 1s linear; /* Smooth transition for the width change */
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-    border-radius: 5px 0 0 5px;
-    white-space: nowrap;
-  }
+    text-align: center; /* Center text inside the progress bar */
+    /* Initial width set in JavaScript; no need to set here unless you want a default value */
+}
   
   .timer {
     padding: 0 20px;
