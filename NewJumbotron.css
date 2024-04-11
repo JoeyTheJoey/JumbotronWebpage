@@ -1,46 +1,4 @@
-/* Apply styles to the countdown timer section */
-#countdown {
-    text-align: center;
-    font-family: Futura PT, sans-serif;
-    font-weight: bold;
-    font-size: 180px;
-    color: white;
-    position: fixed;
-    top: calc(50% + 100px); 
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1; 
-}
-
-#countdown p {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-#countdown span {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-/* for logo */
-#image-container {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    position: fixed;
-    top: calc(50% - 300); 
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2; /* Ensure it's above the color box and countdown timer */
-}
-
-/* for logo */
-#image {
-    width: 300px; /* Set a fixed width for the logo */
-    height: auto;
-    margin: 15px;
-}
-
+/* Base styles for overall layout and visibility */
 body {
     color: white;
     margin: 0;
@@ -48,45 +6,91 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
+    background: #333; /* Assuming a dark theme; adjust as necessary */
+}
+
+#image-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: fixed;
+    top: 2%; /* Adjusted for better visibility */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+#image {
+    width: 75vw; /* Adjusts width to 50% of the viewport width */
+    max-width: 300px; /* Ensures the image does not exceed a width of 300px */
+    height: auto; /* Maintains the aspect ratio */
+    margin: 0 auto; /* Centers the image and removes negative margin */
 }
 
 #progress-container {
     position: fixed;
-    top: 50%;
+    top: 47%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%; /* Adjust based on your layout */
+    width: 80%; /* Utilize majority of viewport width */
+    max-width: 800px; /* Limit max width for larger screens */
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px; /* Adjust the gap between progress bars */
+    padding: 20px;
+    gap: 50px; /* Increase gap for clearer separation */
+}
+
+.progress-section {
+    width: 100%; /* Ensure section uses full container width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-label {
+    font-family: 'Futura PT', sans-serif;
+    font-weight: bold;
+    font-size: 36px; /* Adjusted for consistency */
+    color: white; /* Ensure visibility against the background */
 }
 
 .progress-bar-container {
-    display: flex;
-    width: 100%; /* Full width of the container */
-    background-color: rgba(0, 0, 0, 0.5); /* Background of the container, visible as the progress depletes */
-    border-radius: 5px; /* Optional, for rounded corners */
-    overflow: hidden; /* Ensures the progress bar does not overflow the container */
+    display: flex; /* Use flexbox to layout progress bar and timer */
+    align-items: center; /* Center items vertically */
+    width: 100%;
+    padding-right: 10px; /* Provide space for the timer */
+    background-color: rgba(0, 0, 0, 0.5); /* Background of the container for visibility */
+    border-radius: 5px;
+    position: relative; /* Positioning context for absolute positioning inside */
+    overflow: hidden;
 }
 
 .progress-bar {
-    height: 50px; /* Full height of the container */
-    transition: width 1s linear; /* Smooth transition for the width change */
+    height: 50px;
+    transition: width 0.5s ease-out;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
-    text-align: center; /* Center text inside the progress bar */
-    white-space: nowrap;
+    color: #FFF;
+    background-color: #000; /* Initial background color, will be overwritten by JS */
+    width: 100%; /* Initial width, will be dynamically adjusted by JS */
 }
-  
-  .timer {
-    padding: 0 20px;
+
+.timer {
+    margin-left: auto; /* Push the timer to the right */
+    padding: 0 10px; /* Spacing */
+    white-space: nowrap;
+    position: absolute; /* Position the timer to stick to the right of the container */
+    right: 0;
     font-family: 'Futura PT', sans-serif;
     font-weight: bold;
-    font-size: 36px;
-  }
+    font-size: 36px; /* Adjusted for consistency */
+    color: white; /* Ensure visibility against the background */
+}
+
+
 
 .background-black { background-color: #000; }
 .background-orange { background-color: #ffa500; }

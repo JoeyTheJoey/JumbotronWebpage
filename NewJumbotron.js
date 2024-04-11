@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
       resetTimes.forEach((session, index) => {
           const progressBar = document.getElementById(`progress-bar-${index + 1}`);
           const timer = document.getElementById(`timer-${index + 1}`);
-          if (!progressBar || !timer) return;
+          const colorLabel = document.getElementById(`color-label-${index + 1}`);
+          if (!progressBar || !timer || !colorLabel) return;
   
           // Updated to consider the full cycle duration as 45 minutes
           const totalDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
           progressBar.style.width = `${widthPercentage}%`;
           progressBar.className = `progress-bar background-${session.color}`;
+          colorLabel.textContent = session.color.toUpperCase();
   
           const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
           const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);

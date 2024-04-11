@@ -8,9 +8,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone.min.js"></script>
-    <script src="NewJumbotron.js" defer></script>
 
-    <title>Countdown Timer</title>
+    <title>Jumbotron</title>
 </head>
 
 <body>
@@ -18,21 +17,33 @@
     <div id="image-container">
         <img src="Logo.png" alt="Launch Logo" id="image">
     </div>
+    
 
     <div id="progress-container">
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progress-bar-1"></div>
-            <span class="timer" id="timer-1">00:00</span>
+        <div class="progress-section">
+            <span class="color-label" id="color-label-1"></span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar-1"></div>
+                <span class="timer" id="timer-1">00:00</span>
+            </div>
         </div>
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progress-bar-2"></div>
-            <span class="timer" id="timer-2">00:00</span>
+        <div class="progress-section">
+            <span class="color-label" id="color-label-2"></span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar-2"></div>
+                <span class="timer" id="timer-2">00:00</span>
+            </div>
         </div>
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progress-bar-3"></div>
-            <span class="timer" id="timer-3">00:00</span>
+        <div class="progress-section">
+            <span class="color-label" id="color-label-3"></span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar-3"></div>
+                <span class="timer" id="timer-3">00:00</span>
+            </div>
         </div>
     </div>
+
+    <script src="NewJumbotron.js" defer></script>
 
 </body>
 </html>
