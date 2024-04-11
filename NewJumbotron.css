@@ -65,7 +65,7 @@ body {
 .progress-bar-container {
     display: flex;
     width: 100%; /* Full width of the container */
-    background-color: #ddd; /* Background of the container, visible as the progress depletes */
+    background-color: rgba(0, 0, 0, 0.5); /* Background of the container, visible as the progress depletes */
     border-radius: 5px; /* Optional, for rounded corners */
     overflow: hidden; /* Ensures the progress bar does not overflow the container */
 }
@@ -78,12 +78,14 @@ body {
     justify-content: center;
     color: #fff;
     text-align: center; /* Center text inside the progress bar */
-    /* Initial width set in JavaScript; no need to set here unless you want a default value */
+    white-space: nowrap;
 }
   
   .timer {
     padding: 0 20px;
     font-family: 'Futura PT', sans-serif;
+    font-weight: bold;
+    font-size: 36px;
   }
 
 .background-black { background-color: #000; }
