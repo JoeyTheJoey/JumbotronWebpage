@@ -59,22 +59,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateProgressBars(resetTimes) {
-        resetTimes.forEach((session, index) => {
-            const progressBar = document.getElementById(`progress-bar-${index + 1}`);
-            const timer = document.getElementById(`timer-${index + 1}`);
-            if (!progressBar || !timer) return;
-
-            const totalDuration = session.nextResetTime.clone().subtract(2, 'hours').diff(session.nextResetTime.clone().subtract(2.5, 'hours'));
-            let widthPercentage = (session.remainingTime / totalDuration) * 100;
-
-            progressBar.style.width = `${widthPercentage}%`;
-            progressBar.className = `progress-bar background-${session.color}`;
-
-            const minutes = Math.floor(session.remainingTime / (60 * 1000));
-            const seconds = Math.floor((session.remainingTime % (60 * 1000)) / 1000);
-            timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        });
-    }
+      resetTimes.forEach((session, index) => {
+          const progressBar = document.getElementById(`progress-bar-${index + 1}`);
+          const timer = document.getElementById(`timer-${index + 1}`);
+          if (!progressBar || !timer) return;
+  
+          // Updated to consider the full cycle duration as 45 minutes
+          const totalDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
+          let remainingTimeInMilliseconds = session.remainingTime;
+          
+          // Ensure remaining time does not exceed the cycle duration
+          if (remainingTimeInMilliseconds > totalDuration) {
+              remainingTimeInMilliseconds = totalDuration;
+          }
+  
+          // Calculate the width percentage based on the remaining time
+          let widthPercentage = (remainingTimeInMilliseconds / totalDuration) * 100;
+  
+          progressBar.style.width = `${widthPercentage}%`;
+          progressBar.className = `progress-bar background-${session.color}`;
+  
+          const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
+          const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
+          timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      });
+  }
 
     function main() {
         const localSchedule = convertScheduleToLocalTime(etSchedule);
