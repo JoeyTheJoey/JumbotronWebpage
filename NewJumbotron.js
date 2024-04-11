@@ -87,6 +87,28 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
+  function displayLocalTime() {
+    const timeContainer = document.getElementById('local-time-container');
+    if (!timeContainer) {
+        console.warn("Time container not found.");
+        return;
+    }
+    const now = new Date();
+    // Convert hours to 12-hour format
+    let hours = now.getHours() % 12 || 12;
+    let minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
+    // Determine if it's AM or PM
+    const meridiem = now.getHours() >= 12 ? 'PM' : 'AM';
+    // Format time as hh:mm AM/PM
+    const timeString = `${hours}:${minutes} ${meridiem}`;
+    timeContainer.textContent = timeString; // Display time without any label
+}
+
+// Update time immediately and every minute
+displayLocalTime();
+setInterval(displayLocalTime, 60000); // Update every minute for accuracy
+
+
     function main() {
         const localSchedule = convertScheduleToLocalTime(etSchedule);
         const resetTimes = getNextResetTimes(localSchedule);

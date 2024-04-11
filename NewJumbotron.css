@@ -88,9 +88,20 @@ body {
     font-weight: bold;
     font-size: 36px; /* Adjusted for consistency */
     color: white; /* Ensure visibility against the background */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75); /* Horizontal offset, vertical offset, blur radius, color */
 }
 
-
+#local-time-container {
+    position: fixed;
+    bottom: -1%;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 8vw; /* Use viewport width units for font size */
+    color: white; /* White text color */
+    font-family: 'Futura PT', sans-serif;
+    z-index: 1000; /* Ensure it's visible above other elements */
+}
 
 .background-black { background-color: #000; }
 .background-orange { background-color: #ffa500; }
