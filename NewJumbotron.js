@@ -59,33 +59,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateProgressBars(resetTimes) {
-      resetTimes.forEach((session, index) => {
-          const progressBar = document.getElementById(`progress-bar-${index + 1}`);
-          const timer = document.getElementById(`timer-${index + 1}`);
-          const colorLabel = document.getElementById(`color-label-${index + 1}`);
-          if (!progressBar || !timer || !colorLabel) return;
-  
-          // Updated to consider the full cycle duration as 45 minutes
-          const totalDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
-          let remainingTimeInMilliseconds = session.remainingTime;
-          
-          // Ensure remaining time does not exceed the cycle duration
-          if (remainingTimeInMilliseconds > totalDuration) {
-              remainingTimeInMilliseconds = totalDuration;
-          }
-  
-          // Calculate the width percentage based on the remaining time
-          let widthPercentage = (remainingTimeInMilliseconds / totalDuration) * 100;
-  
-          progressBar.style.width = `${widthPercentage}%`;
-          progressBar.className = `progress-bar background-${session.color}`;
-          colorLabel.textContent = session.color.toUpperCase();
-  
-          const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
-          const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
-          timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-      });
-  }
+        resetTimes.forEach((session, index) => {
+            const progressBar = document.getElementById(`progress-bar-${index + 1}`);
+            const timer = document.getElementById(`timer-${index + 1}`);
+            const colorLabel = document.getElementById(`color-label-${index + 1}`);
+            const audio = document.getElementById(`audio-${session.color}`);
+    
+            if (!progressBar || !timer || !colorLabel || !audio) return;
+    
+            // Updated to consider the full cycle duration as 45 minutes
+            const totalDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
+            let remainingTimeInMilliseconds = session.remainingTime;
+    
+            // Ensure remaining time does not exceed the cycle duration
+            if (remainingTimeInMilliseconds > totalDuration) {
+                remainingTimeInMilliseconds = totalDuration;
+            }
+    
+            // Calculate the width percentage based on the remaining time
+            let widthPercentage = (remainingTimeInMilliseconds / totalDuration) * 100;
+    
+            progressBar.style.width = `${widthPercentage}%`;
+            progressBar.className = `progress-bar background-${session.color}`;
+            colorLabel.textContent = session.color.toUpperCase();
+    
+            const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
+            const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
+            timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    
+            // Check if the timer has just finished and trigger audio
+            if (widthPercentage === 100 && !audio.paused) {
+                audio.play();
+                audio.onended = function() {
+                    const endingAudio = document.getElementById('audio-ending');
+                    endingAudio.src = 'VO_Ending.mp3';
+                    endingAudio.play();
+                };
+            }
+        });
+    }
+    
 
   function displayLocalTime() {
     const timeContainer = document.getElementById('local-time-container');
