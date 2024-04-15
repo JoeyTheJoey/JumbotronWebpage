@@ -14,7 +14,7 @@ body {
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     position: fixed;
-    top: 2%; /* Adjusted for better visibility */
+    top: 1.5%; /* Adjusted for better visibility */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000; /* Ensure it's above other elements */
