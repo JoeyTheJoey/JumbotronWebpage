@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="NewJumbotron.css">
     <link rel="stylesheet" href="BackgroundImage.css">
+    <link href="https://fonts.googleapis.com/css2?family=Futura+PT:wght@400;500;700&display=swap" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone.min.js"></script>
@@ -46,20 +47,21 @@
     <div id="local-time-container"></div>
 
     <!-- Audio elements for color-specific and general playback -->
-<audio id="audio-black" src="audio/BLACK.mp3" type="audio/mp3"></audio>
-<audio id="audio-orange" src="audio/ORANGE.mp3" type="audio/mp3"></audio>
-<audio id="audio-silver" src="audio/SILVER.mp3" type="audio/mp3"></audio>
-<audio id="audio-pink" src="audio/PINK.mp3" type="audio/mp3"></audio>
-<audio id="audio-blue" src="audio/BLUE.mp3" type="audio/mp3"></audio>
-<audio id="audio-gold" src="audio/GOLD.mp3" type="audio/mp3"></audio>
-<audio id="audio-purple" src="audio/PURPLE.mp3" type="audio/mp3"></audio>
-<audio id="audio-yellow" src="audio/YELLOW.mp3" type="audio/mp3"></audio>
-<audio id="audio-red" src="audio/RED.mp3" type="audio/mp3"></audio>
-<audio id="audio-green" src="audio/GREEN.mp3" type="audio/mp3"></audio>
-<audio id="audio-ending" src="audio/VO_Ending" type="audio/mp3"></audio>
+<audio id="audio-black" src="audio/BLACK.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-orange" src="audio/ORANGE.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-silver" src="audio/SILVER.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-pink" src="audio/PINK.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-blue" src="audio/BLUE.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-gold" src="audio/GOLD.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-purple" src="audio/PURPLE.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-yellow" src="audio/YELLOW.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-red" src="audio/RED.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-green" src="audio/GREEN.mp3" type="audio/mp3" preload="auto"></audio>
+<audio id="audio-ending" src="audio/Ending.mp3" type="audio/mp3" preload="auto"></audio>
 
+<button id="startButton" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 128px; padding: 20px 40px; z-index: 2000;">START</button>
 
-    <script src="NewJumbotron.js" defer></script>
+<script src="NewJumbotron.js" defer></script>
 
 </body>
 </html>

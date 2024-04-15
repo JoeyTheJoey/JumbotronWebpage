@@ -1,6 +1,15 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    const startButton = document.getElementById('startButton');
+    if (startButton) {
+        startButton.addEventListener('click', function() {
+            main();
+            setInterval(main, 1000); // Assuming 'main' manages timers and other logic
+            this.style.display = 'none'; // Hide button after clicking
+        });
+    }
+
     // Define your schedule in Eastern Time (ET) since the schedule provided is likely in local time
   const etSchedule = [
     { color: 'black', etTimes: ['10:30', '13:00', '15:30', '18:00', '20:30', '23:00'] },
@@ -88,17 +97,24 @@ document.addEventListener('DOMContentLoaded', function () {
             timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     
             // Check if the timer has just finished and trigger audio
-            if (widthPercentage === 100 && !audio.paused) {
-                audio.play();
-                audio.onended = function() {
-                    const endingAudio = document.getElementById('audio-ending');
-                    endingAudio.src = 'VO_Ending.mp3';
-                    endingAudio.play();
-                };
+            if (widthPercentage >= 100) {
+                if (audio.paused) {
+                    audio.play().then(() => {
+                        audio.onended = function() {
+                            const endingAudio = document.getElementById('audio-ending');
+                            if(endingAudio.paused) {
+                                endingAudio.play().catch(error => {
+                                    console.error("Error playing ending audio:", error);
+                                });
+                            }
+                        };
+                    }).catch(error => {
+                        console.error("Error playing audio for color " + session.color + ":", error);
+                    });
+                }
             }
-        });
-    }
-    
+        }); // Closing the forEach loop
+    } // Closing the updateProgressBars function
 
   function displayLocalTime() {
     const timeContainer = document.getElementById('local-time-container');
