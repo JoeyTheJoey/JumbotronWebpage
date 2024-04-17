@@ -51,21 +51,25 @@ document.addEventListener('DOMContentLoaded', function () {
     function getNextResetTimes(localSchedule) {
         const now = moment();
         return localSchedule.map(session => {
-            // Find the next reset time for this color
-            let resetTimes = session.times.filter(time => time.isSameOrAfter(now));
-
-            if (resetTimes.length === 0) {
-                // If there are no future reset times today, take the first reset time of the next day
-                resetTimes = [session.times[0].clone().add(1, 'days')];
-            }
-
+            // Get times for today and clone them for tomorrow
+            let timesToday = session.times.filter(time => time.isSameOrAfter(now));
+            let timesTomorrow = session.times.map(time => time.clone().add(1, 'days'));
+    
+            // Combine today's and tomorrow's times
+            let allTimes = timesToday.concat(timesTomorrow).filter(time => time.isSameOrAfter(now));
+    
+            // Find the next reset time
+            let nextResetTime = allTimes.sort((a, b) => a.diff(b))[0];
+    
             return {
                 color: session.color,
-                nextResetTime: resetTimes[0],
-                remainingTime: resetTimes[0].diff(now)
+                nextResetTime: nextResetTime,
+                remainingTime: nextResetTime.diff(now)
             };
-        }).sort((a, b) => a.remainingTime - b.remainingTime); // Sort by remaining time
+        }).sort((a, b) => a.remainingTime - b.remainingTime); // Sort sessions by the nearest upcoming event
     }
+    
+    
 
     function updateProgressBars(resetTimes) {
         resetTimes.forEach((session, index) => {
@@ -76,18 +80,14 @@ document.addEventListener('DOMContentLoaded', function () {
     
             if (!progressBar || !timer || !colorLabel || !audio) return;
     
-            // Updated to consider the full cycle duration as 45 minutes
             const totalDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
             let remainingTimeInMilliseconds = session.remainingTime;
     
-            // Ensure remaining time does not exceed the cycle duration
             if (remainingTimeInMilliseconds > totalDuration) {
                 remainingTimeInMilliseconds = totalDuration;
             }
     
-            // Calculate the width percentage based on the remaining time
             let widthPercentage = (remainingTimeInMilliseconds / totalDuration) * 100;
-    
             progressBar.style.width = `${widthPercentage}%`;
             progressBar.className = `progress-bar background-${session.color}`;
             colorLabel.textContent = session.color.toUpperCase();
@@ -96,25 +96,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
             timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     
-            // Check if the timer has just finished and trigger audio
-            if (widthPercentage >= 100) {
-                if (audio.paused) {
-                    audio.play().then(() => {
-                        audio.onended = function() {
-                            const endingAudio = document.getElementById('audio-ending');
-                            if(endingAudio.paused) {
-                                endingAudio.play().catch(error => {
-                                    console.error("Error playing ending audio:", error);
-                                });
-                            }
-                        };
-                    }).catch(error => {
-                        console.error("Error playing audio for color " + session.color + ":", error);
-                    });
-                }
+            // Adjust audio playback condition
+            if (widthPercentage <= 0 && audio.paused) {
+                audio.play().then(() => {
+                    audio.onended = () => {
+                        const endingAudio = document.getElementById('audio-ending');
+                        if (endingAudio.paused) {
+                            endingAudio.play().catch(error => console.error("Error playing ending audio:", error));
+                        }
+                    };
+                }).catch(error => console.error("Error playing audio for color " + session.color + ":", error));
             }
-        }); // Closing the forEach loop
-    } // Closing the updateProgressBars function
+        });
+    }
+    
 
   function displayLocalTime() {
     const timeContainer = document.getElementById('local-time-container');
@@ -138,11 +133,12 @@ displayLocalTime();
 setInterval(displayLocalTime, 60000); // Update every minute for accuracy
 
 
-    function main() {
-        const localSchedule = convertScheduleToLocalTime(etSchedule);
-        const resetTimes = getNextResetTimes(localSchedule);
-        updateProgressBars(resetTimes);
-    }
+function main() {
+    const localSchedule = convertScheduleToLocalTime(etSchedule);
+    const resetTimes = getNextResetTimes(localSchedule);
+    updateProgressBars(resetTimes);
+}
+
 
     main();
     setInterval(main, 1000);

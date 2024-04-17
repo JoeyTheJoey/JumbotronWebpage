@@ -62,7 +62,7 @@ body {
     align-items: center; /* Center items vertically */
     width: 100%;
     padding-right: 10px; /* Provide space for the timer */
-    background-color: rgba(0, 0, 0, 0.5); /* Background of the container for visibility */
+    background-color: rgba(64, 64, 64, 0.5); /* Background of the container for visibility */
     border-radius: 5px;
     position: relative; /* Positioning context for absolute positioning inside */
     overflow: hidden;
