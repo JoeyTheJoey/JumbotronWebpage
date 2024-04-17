@@ -1,6 +1,8 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    let audioPlayedOnLoad = false; // Flag to track if audio has been played on page load
+
     const startButton = document.getElementById('startButton');
     if (startButton) {
         startButton.addEventListener('click', function() {
@@ -48,6 +50,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }));
     }
 
+    function playShortestTimerAudio() {
+        const localSchedule = convertScheduleToLocalTime(etSchedule);
+        const resetTimes = getNextResetTimes(localSchedule);
+
+        // Find the color with the shortest remaining time
+        const shortestTimeColor = resetTimes[0].color;
+        const shortestTimeAudio = document.getElementById(`audio-${shortestTimeColor}`);
+        const endingAudio = document.getElementById('audio-ending');
+
+        if (shortestTimeAudio && endingAudio) {
+            if (!audioPlayedOnLoad) {
+                audioPlayedOnLoad = true; // Set the flag to true after playing audio on load
+                return; // Don't play audio on load
+            }
+            shortestTimeAudio.play().then(() => {
+                console.log(`Audio for ${shortestTimeColor} started playing.`);
+                // Setup onended event handler to play the ending audio after current audio finishes
+                shortestTimeAudio.onended = () => {
+                    endingAudio.play().then(() => {
+                        console.log("Ending audio started playing.");
+                    }).catch(error => {
+                        console.error("Error playing ending audio:", error);
+                    });
+                };
+            }).catch(error => {
+                console.error("Error playing audio for color " + shortestTimeColor + ":", error);
+            });
+        } else {
+            console.error("Audio elements not found for shortest time color.");
+        }
+    }
+
     function getNextResetTimes(localSchedule) {
         const now = moment();
         return localSchedule.map(session => {
@@ -71,45 +105,49 @@ document.addEventListener('DOMContentLoaded', function () {
     
     
 
-    function updateProgressBars(resetTimes) {
-        resetTimes.forEach((session, index) => {
-            const progressBar = document.getElementById(`progress-bar-${index + 1}`);
-            const timer = document.getElementById(`timer-${index + 1}`);
-            const colorLabel = document.getElementById(`color-label-${index + 1}`);
-            const audio = document.getElementById(`audio-${session.color}`);
-    
-            if (!progressBar || !timer || !colorLabel || !audio) return;
-    
-            const totalDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
-            let remainingTimeInMilliseconds = session.remainingTime;
-    
-            if (remainingTimeInMilliseconds > totalDuration) {
-                remainingTimeInMilliseconds = totalDuration;
-            }
-    
-            let widthPercentage = (remainingTimeInMilliseconds / totalDuration) * 100;
-            progressBar.style.width = `${widthPercentage}%`;
-            progressBar.className = `progress-bar background-${session.color}`;
-            colorLabel.textContent = session.color.toUpperCase();
-    
-            const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
-            const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
-            timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    
-            // Adjust audio playback condition
-            if (widthPercentage <= 0 && audio.paused) {
-                audio.play().then(() => {
-                    audio.onended = () => {
-                        const endingAudio = document.getElementById('audio-ending');
-                        if (endingAudio.paused) {
-                            endingAudio.play().catch(error => console.error("Error playing ending audio:", error));
-                        }
-                    };
-                }).catch(error => console.error("Error playing audio for color " + session.color + ":", error));
-            }
-        });
-    }
-    
+function updateProgressBars(resetTimes) {
+    resetTimes.forEach((session, index) => {
+        const progressBar = document.getElementById(`progress-bar-${index + 1}`);
+        const timer = document.getElementById(`timer-${index + 1}`);
+        const colorLabel = document.getElementById(`color-label-${index + 1}`);
+        const audio = document.getElementById(`audio-${session.color}`);
+
+        if (!progressBar || !timer || !colorLabel || !audio) return;
+
+        const totalDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
+        let remainingTimeInMilliseconds = session.remainingTime;
+
+        // Calculate the width percentage based on the remaining time
+        let widthPercentage = 100 * remainingTimeInMilliseconds / totalDuration;
+        progressBar.style.width = `${widthPercentage}%`;
+        progressBar.className = `progress-bar background-${session.color}`;
+        colorLabel.textContent = session.color.toUpperCase();
+
+        const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
+        const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
+        timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        // Play audio if the progress bar reaches 0% and audio is not already playing
+        if (widthPercentage <= 0 && audio.paused) {
+            audio.play().then(() => {
+                console.log(`Audio for ${session.color} started playing.`);
+                // Setup onended event handler to play the ending audio after current audio finishes
+                audio.onended = () => {
+                    const endingAudio = document.getElementById('audio-ending');
+                    if (endingAudio && endingAudio.paused) {
+                        endingAudio.play().then(() => {
+                            console.log("Ending audio started playing.");
+                        }).catch(error => {
+                            console.error("Error playing ending audio:", error);
+                        });
+                    }
+                };
+            }).catch(error => {
+                console.error("Error playing audio for color " + session.color + ":", error);
+            });
+        }
+    });
+}
 
   function displayLocalTime() {
     const timeContainer = document.getElementById('local-time-container');
@@ -137,9 +175,24 @@ function main() {
     const localSchedule = convertScheduleToLocalTime(etSchedule);
     const resetTimes = getNextResetTimes(localSchedule);
     updateProgressBars(resetTimes);
+
+    // Check if any timer has expired
+    const anyTimerExpired = resetTimes.some(session => session.remainingTime <= 0);
+
+    // Play audio only if a timer has expired and audio hasn't been played on page load
+    if (anyTimerExpired && !audioPlayedOnLoad) {
+        const endingAudio = document.getElementById('audio-ending');
+        if (endingAudio && endingAudio.paused) {
+            endingAudio.play().then(() => {
+                console.log("Ending audio started playing.");
+            }).catch(error => {
+                console.error("Error playing ending audio:", error);
+            });
+        }
+        audioPlayedOnLoad = true; // Set the flag to true after playing audio on load
+    }
 }
 
-
-    main();
-    setInterval(main, 1000);
+playShortestTimerAudio();
+setInterval(playShortestTimerAudio, 15 * 60 * 1000); // 15 minutes in milliseconds
 });
