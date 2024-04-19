@@ -152,16 +152,19 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
     function playScheduledAudio() {
-        const urgentAudio = document.getElementById(`audio-${currentUrgentColor}`);
-        if (urgentAudio) {
-            urgentAudio.play().then(() => {
-                console.log(`Playing urgent audio for color: ${currentUrgentColor}`);
-                urgentAudio.onended = () => playAudioEnding();
-            }).catch(error => {
-                console.error(`Failed to play urgent audio for ${currentUrgentColor}:`, error);
-            });
+        if (urgentAudio && currentUrgentColor !== previousPlayedColor) {
+            if (urgentAudio.paused) {
+                urgentAudio.play().then(() => {
+                    console.log(`Playing urgent audio for color: ${currentUrgentColor}`);
+                    previousPlayedColor = currentUrgentColor; // Track last played color
+                    urgentAudio.onended = () => playAudioEnding();
+                }).catch(error => {
+                    console.error(`Failed to play urgent audio for ${currentUrgentColor}:`, error);
+                });
+            }
         }
     }
+    
 
     function playAudioEnding() {
         const audioEnding = document.getElementById('audio-ending');
@@ -184,6 +187,37 @@ document.addEventListener('DOMContentLoaded', function () {
             setInterval(playScheduledAudio, 15 * 60 * 1000);
         }, firstDelay);
     }
+
+    let audioQueue = [];  // Queue to manage audio plays
+
+function queueAudio(color) {
+    if (!audioQueue.includes(color)) {
+        audioQueue.push(color);
+    }
+    playNextInQueue();
+}
+
+function playNextInQueue() {
+    if (audioQueue.length > 0 && !urgentAudio.isPlaying) {
+        let nextAudioColor = audioQueue.shift();  // Get next color to play
+        const nextAudio = document.getElementById(`audio-${nextAudioColor}`);
+        if (nextAudio.paused) {
+            nextAudio.play().then(() => {
+                console.log(`Playing audio for color: ${nextAudioColor}`);
+                nextAudio.onended = () => {
+                    if (audioQueue.length > 0) {
+                        playNextInQueue();  // Play next in queue after current ends
+                    } else {
+                        playAudioEnding();
+                    }
+                };
+            }).catch(error => {
+                console.error(`Failed to play audio for ${nextAudioColor}:`, error);
+            });
+        }
+    }
+}
+
     
     function displayLocalTime() {
         const now = new Date();
