@@ -17,14 +17,24 @@ document.addEventListener('DOMContentLoaded', function () {
         updateProgressBars(resetTimes);
     }
 
-    const startButton = document.getElementById('startButton');
-    if (startButton) {
-        startButton.addEventListener('click', function() {
-            main();
-            setInterval(main, 1000); // Assuming 'main' manages timers and other logic
-            this.style.display = 'none'; // Hide button after clicking
+    // Setup the audio enabling button
+    const enableAudioButton = document.getElementById('enableAudioButton');
+    if (enableAudioButton) {
+        enableAudioButton.addEventListener('click', function() {
+            // Play each audio element silently and pause immediately to satisfy autoplay policies
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.play().then(() => {
+                    audio.pause(); // Pause the audio after starting
+                    audio.currentTime = 0; // Reset the audio position
+                }).catch(error => {
+                    console.error("Error initiating audio playback:", error);
+                });
+            });
+            this.remove(); // Optionally remove the button after enabling audio
         });
     }
+
+    scheduleAudioPlay();
 
     // Define your schedule in Eastern Time (ET) since the schedule provided is likely in local time
   const etSchedule = [
@@ -85,60 +95,116 @@ document.addEventListener('DOMContentLoaded', function () {
         }).sort((a, b) => a.remainingTime - b.remainingTime); // Sort sessions by the nearest upcoming event
     }
     
-    
+    let currentUrgentColor = '';
 
     function updateProgressBars(resetTimes) {
-        resetTimes.forEach((session, index) => {
+        // Sort reset times to find the three with the least remaining time
+        resetTimes.sort((a, b) => a.remainingTime - b.remainingTime);
+    
+        // Update only the first three entries
+        resetTimes.slice(0, 3).forEach((session, index) => {
             const progressBar = document.getElementById(`progress-bar-${index + 1}`);
             const timer = document.getElementById(`timer-${index + 1}`);
             const colorLabel = document.getElementById(`color-label-${index + 1}`);
-            const audio = document.getElementById(`audio-${session.color}`);
     
-            if (!progressBar || !timer || !colorLabel || !audio) return;
+            if (!progressBar || !timer || !colorLabel) {
+                console.error("One or more elements couldn't be found for", session.color);
+                return;
+            }
     
             const totalDuration = 45 * 60 * 1000; // Each interval duration
-            let remainingTimeInMilliseconds = session.remainingTime;
+            const remainingTimeInMilliseconds = session.remainingTime;
+            const widthPercentage = 100 * (remainingTimeInMilliseconds / totalDuration);
     
-            let widthPercentage = 100 * (remainingTimeInMilliseconds / totalDuration);
             progressBar.style.width = `${widthPercentage}%`;
-            progressBar.className = `progress-bar background-${session.color}`;
-            colorLabel.textContent = session.color.toUpperCase();
+            progressBar.className = `progress-bar background-${session.color.toLowerCase()}`; // Ensures color classes are applied correctly
     
-            let minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
-            let seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
+            colorLabel.textContent = session.color.toUpperCase();
+            const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
+            const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
             timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     
-            // Check if the progress bar has finished and if the audio is not already playing
-            if (widthPercentage <= 0 && audio.paused) {
-                if (!audio.played.length) { // Ensure the audio hasn't played yet
-                    audio.play().then(() => {
-                        console.log(`Audio for ${session.color} started playing.`);
-                    }).catch(error => {
-                        console.error("Error playing audio for color " + session.color + ":", error);
-                    });
-                }
+            // Track the most urgent color for audio purposes
+            if (index === 0) {  // Only update the currentUrgentColor for the most urgent entry
+                currentUrgentColor = session.color.toLowerCase();
             }
         });
     }
+    
+     
 
-  function displayLocalTime() {
-    const timeContainer = document.getElementById('local-time-container');
-    if (!timeContainer) {
-        console.warn("Time container not found.");
-        return;
+    function timeUntilNextQuarterHour() {
+        const now = new Date();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const milliseconds = now.getMilliseconds();
+        let minutesToNextQuarterHour = 15 - (minutes % 15);
+        if (minutesToNextQuarterHour === 15 && seconds === 0 && milliseconds === 0) {
+            // It's exactly on the quarter hour, play immediately
+            return 0;
+        } else {
+            // Calculate milliseconds until the next 15-minute mark
+            let secondsToNextQuarterHour = (minutesToNextQuarterHour * 60) - seconds;
+            let millisecondsToNextQuarterHour = (secondsToNextQuarterHour * 1000) - milliseconds;
+            return millisecondsToNextQuarterHour;
+        }
     }
-    const now = new Date();
-    // Convert hours to 12-hour format
-    let hours = now.getHours() % 12 || 12;
-    let minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
-    // Determine if it's AM or PM
-    const meridiem = now.getHours() >= 12 ? 'PM' : 'AM';
-    // Format time as hh:mm AM/PM
-    const timeString = `${hours}:${minutes} ${meridiem}`;
-    timeContainer.textContent = timeString; // Display time without any label
-}
+    
+
+    function playScheduledAudio() {
+        const urgentAudio = document.getElementById(`audio-${currentUrgentColor}`);
+        if (urgentAudio) {
+            urgentAudio.play().then(() => {
+                console.log(`Playing urgent audio for color: ${currentUrgentColor}`);
+                urgentAudio.onended = () => playAudioEnding();
+            }).catch(error => {
+                console.error(`Failed to play urgent audio for ${currentUrgentColor}:`, error);
+            });
+        }
+    }
+
+    function playAudioEnding() {
+        const audioEnding = document.getElementById('audio-ending');
+        if (audioEnding) {
+            audioEnding.play().then(() => {
+                console.log("Audio ending playing successfully.");
+            }).catch(error => {
+                console.error("Failed to play audio-ending:", error);
+            });
+        } else {
+            console.error("Audio-ending element not found.");
+        }
+    }
+
+    function scheduleAudioPlay() {
+        const firstDelay = timeUntilNextQuarterHour();
+        setTimeout(() => {
+            playScheduledAudio();
+            // After playing the first time, set an interval to play every 15 minutes
+            setInterval(playScheduledAudio, 15 * 60 * 1000);
+        }, firstDelay);
+    }
+    
+    function displayLocalTime() {
+        const now = new Date();
+        const hours = now.getHours() % 12 || 12; // Adjust for 12-hour clock format
+        const minutes = now.getMinutes();
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; // Ensure double digits
+        const meridiem = now.getHours() >= 12 ? 'PM' : 'AM';
+    
+        const timeContainer = document.getElementById('local-time-container');
+        if (timeContainer) {
+            timeContainer.textContent = `${hours}:${formattedMinutes} ${meridiem}`; // Update display
+        } else {
+            console.warn("Time container not found.");
+        }
+    }
+
 
 // Update time immediately and every minute
 displayLocalTime();
 setInterval(displayLocalTime, 60000); // Update every minute for accuracy
+
+main();
+setInterval(main, 1000);
 });
