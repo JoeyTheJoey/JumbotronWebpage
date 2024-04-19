@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     let currentUrgentColor = '';
+    let previousPlayedColor = '';
 
     function updateProgressBars(resetTimes) {
         // Sort reset times to find the three with the least remaining time
@@ -152,6 +153,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
     function playScheduledAudio() {
+        // Define urgentAudio based on the current urgent color
+        const urgentAudio = document.getElementById(`audio-${currentUrgentColor}`);
+        
         if (urgentAudio && currentUrgentColor !== previousPlayedColor) {
             if (urgentAudio.paused) {
                 urgentAudio.play().then(() => {
@@ -164,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+    
     
 
     function playAudioEnding() {
@@ -237,7 +242,7 @@ function playNextInQueue() {
 
 // Update time immediately and every minute
 displayLocalTime();
-setInterval(displayLocalTime, 60000); // Update every minute for accuracy
+setInterval(displayLocalTime, 1000); // Update every second for accuracy
 
 main();
 setInterval(main, 1000);
