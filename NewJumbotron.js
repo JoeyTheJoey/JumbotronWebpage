@@ -184,45 +184,45 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function scheduleAudioPlay() {
-        const firstDelay = timeUntilNextQuarterHour();
-        const firstHalfHourDelay = timeUntilNextHalfHour(); // New function to calculate delay to next half-hour mark
-    
-        setTimeout(() => {
-            playScheduledAudio(); // Existing function for quarter-hour cues
-            // After playing the first time, set an interval to play every 15 minutes
-            setInterval(playScheduledAudio, 15 * 60 * 1000);
-        }, firstDelay);
-    
-        setTimeout(() => {
-            playHalfHourAudio(); // New function to handle half-hour audio
-            setInterval(playHalfHourAudio, 30 * 60 * 1000); // Schedule it to play every 30 minutes
-        }, firstHalfHourDelay);
+function scheduleAudioPlay() {
+    const firstDelay = timeUntilNextQuarterHour();
+    const firstThirtyFiveMinuteDelay = timeUntilNextThirtyFiveMinutes();
+
+    setTimeout(() => {
+        playScheduledAudio();
+        setInterval(playScheduledAudio, 15 * 60 * 1000);
+    }, firstDelay);
+
+    setTimeout(() => {
+        playThirtyFiveMinuteAudio();
+        setInterval(playThirtyFiveMinuteAudio, 35 * 60 * 1000);
+    }, firstThirtyFiveMinuteDelay);
+}
+
+function timeUntilNextThirtyFiveMinutes() {
+    const now = new Date();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    const milliseconds = now.getMilliseconds();
+    let minutesToNextThirtyFive = 35 - (minutes % 35);
+    if (minutesToNextThirtyFive === 35) {
+        minutesToNextThirtyFive = 0; // If it's exactly on the mark, set to zero
     }
-    
-    function timeUntilNextHalfHour() {
-        const now = new Date();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
-        const milliseconds = now.getMilliseconds();
-        let minutesToNextHalfHour = 30 - (minutes % 30);
-        if (minutesToNextHalfHour === 30 && seconds === 0 && milliseconds === 0) {
-            return 0; // It's exactly on the half-hour, play immediately
-        } else {
-            let secondsToNextHalfHour = (minutesToNextHalfHour * 60) - seconds;
-            let millisecondsToNextHalfHour = (secondsToNextHalfHour * 1000) - milliseconds;
-            return millisecondsToNextHalfHour;
-        }
+    let secondsToNextThirtyFive = (minutesToNextThirtyFive * 60) - seconds;
+    let millisecondsToNextThirtyFive = (secondsToNextThirtyFive * 1000) - milliseconds;
+    return millisecondsToNextThirtyFive;
+}
+
+function playThirtyFiveMinuteAudio() {
+    const thirtyFiveMinuteAudio = document.getElementById('audio-promo');
+    if (thirtyFiveMinuteAudio.paused) {
+        thirtyFiveMinuteAudio.play().catch(error => {
+            console.error("Failed to play 35-minute audio:", error);
+        });
     }
-    
-    function playHalfHourAudio() {
-        const halfHourAudio = document.getElementById('audio-promo');
-        if (halfHourAudio.paused) {
-            halfHourAudio.play().catch(error => {
-                console.error("Failed to play half-hour audio:", error);
-            });
-        }
-    }
+}
+
+
     
 
 function playNextInQueue() {
