@@ -186,21 +186,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function scheduleAudioPlay() {
         const firstDelay = timeUntilNextQuarterHour();
+        const firstHalfHourDelay = timeUntilNextHalfHour(); // New function to calculate delay to next half-hour mark
+    
         setTimeout(() => {
-            playScheduledAudio();
+            playScheduledAudio(); // Existing function for quarter-hour cues
             // After playing the first time, set an interval to play every 15 minutes
             setInterval(playScheduledAudio, 15 * 60 * 1000);
         }, firstDelay);
+    
+        setTimeout(() => {
+            playHalfHourAudio(); // New function to handle half-hour audio
+            setInterval(playHalfHourAudio, 30 * 60 * 1000); // Schedule it to play every 30 minutes
+        }, firstHalfHourDelay);
     }
-
-    let audioQueue = [];  // Queue to manage audio plays
-
-function queueAudio(color) {
-    if (!audioQueue.includes(color)) {
-        audioQueue.push(color);
+    
+    function timeUntilNextHalfHour() {
+        const now = new Date();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const milliseconds = now.getMilliseconds();
+        let minutesToNextHalfHour = 30 - (minutes % 30);
+        if (minutesToNextHalfHour === 30 && seconds === 0 && milliseconds === 0) {
+            return 0; // It's exactly on the half-hour, play immediately
+        } else {
+            let secondsToNextHalfHour = (minutesToNextHalfHour * 60) - seconds;
+            let millisecondsToNextHalfHour = (secondsToNextHalfHour * 1000) - milliseconds;
+            return millisecondsToNextHalfHour;
+        }
     }
-    playNextInQueue();
-}
+    
+    function playHalfHourAudio() {
+        const halfHourAudio = document.getElementById('audio-promo');
+        if (halfHourAudio.paused) {
+            halfHourAudio.play().catch(error => {
+                console.error("Failed to play half-hour audio:", error);
+            });
+        }
+    }
+    
 
 function playNextInQueue() {
     if (audioQueue.length > 0 && !urgentAudio.isPlaying) {
