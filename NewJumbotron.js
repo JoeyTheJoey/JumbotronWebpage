@@ -186,17 +186,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function scheduleAudioPlay() {
     const firstDelay = timeUntilNextQuarterHour();
-    const firstThirtyFiveMinuteDelay = timeUntilNextThirtyFiveMinutes();
 
     setTimeout(() => {
         playScheduledAudio();
-        setInterval(playScheduledAudio, 15 * 60 * 1000);
+        setInterval(playScheduledAudio, 15 * 60 * 1000); // Repeat every 15 minutes
     }, firstDelay);
+
+    // Calculate the initial delay to the first 35-minute mark
+    const firstThirtyFiveMinuteMarkDelay = timeUntilNextThirtyFiveMinutes();
 
     setTimeout(() => {
         playThirtyFiveMinuteAudio();
-        setInterval(playThirtyFiveMinuteAudio, 35 * 60 * 1000);
-    }, firstThirtyFiveMinuteDelay);
+        setInterval(playThirtyFiveMinuteAudio, 60 * 60 * 1000); // Repeat every hour
+    }, firstThirtyFiveMinuteMarkDelay);
 }
 
 function timeUntilNextThirtyFiveMinutes() {
@@ -204,26 +206,22 @@ function timeUntilNextThirtyFiveMinutes() {
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
     const milliseconds = now.getMilliseconds();
-    let minutesToNextThirtyFive = 35 - (minutes % 35);
-    if (minutesToNextThirtyFive === 35) {
-        minutesToNextThirtyFive = 0; // If it's exactly on the mark, set to zero
-    }
-    let secondsToNextThirtyFive = (minutesToNextThirtyFive * 60) - seconds;
-    let millisecondsToNextThirtyFive = (secondsToNextThirtyFive * 1000) - milliseconds;
+    let minutesToNextThirtyFive = 35 - minutes;
+    if (minutesToNextThirtyFive <= 0) minutesToNextThirtyFive += 60; // Adjust if current minutes is greater than 35
+
+    let secondsToNextThirtyFive = minutesToNextThirtyFive * 60 - seconds;
+    let millisecondsToNextThirtyFive = secondsToNextThirtyFive * 1000 - milliseconds;
     return millisecondsToNextThirtyFive;
 }
 
 function playThirtyFiveMinuteAudio() {
     const thirtyFiveMinuteAudio = document.getElementById('audio-promo');
-    if (thirtyFiveMinuteAudio.paused) {
+    if (thirtyFiveMinuteAudio && thirtyFiveMinuteAudio.paused) {
         thirtyFiveMinuteAudio.play().catch(error => {
             console.error("Failed to play 35-minute audio:", error);
         });
     }
-}
-
-
-    
+} 
 
 function playNextInQueue() {
     if (audioQueue.length > 0 && !urgentAudio.isPlaying) {
