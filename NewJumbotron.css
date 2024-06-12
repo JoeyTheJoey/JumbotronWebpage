@@ -22,7 +22,7 @@ body {
 
 #image {
     width: 75vw; /* Adjusts width to 50% of the viewport width */
-    max-width: 325px; /* Ensures the image does not exceed a width of 300px */
+    max-width: 20rem; /* Ensures the image does not exceed a width of 300px */
     height: auto; /* Maintains the aspect ratio */
     margin: 0 auto; /* Centers the image and removes negative margin */
     margin-top: 10px;;
