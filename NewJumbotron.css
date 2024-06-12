@@ -30,7 +30,7 @@ body {
 
 #progress-container {
     position: fixed;
-    top: 47%;
+    top: 49%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 80%; /* Utilize majority of viewport width */
@@ -39,7 +39,7 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    gap: 50px; /* Increase gap for clearer separation */
+    gap: 15px; /* Increase gap for clearer separation */
 }
 
 .progress-section {
@@ -47,7 +47,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 }
 
 .color-label {
@@ -70,7 +70,7 @@ body {
 }
 
 .progress-bar {
-    height: 50px;
+    height: 100px;
     transition: width 0.5s ease-out;
     display: flex;
     align-items: center;
@@ -89,7 +89,7 @@ body {
     font-family: "futura-pt-bold", sans-serif;
     font-weight: 700;
     font-style: normal;
-    font-size: 36px; /* Adjusted for consistency */
+    font-size: 56px; /* Adjusted for consistency */
     color: white; /* Ensure visibility against the background */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75); /* Horizontal offset, vertical offset, blur radius, color */
 }
