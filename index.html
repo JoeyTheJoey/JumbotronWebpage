@@ -19,32 +19,48 @@
         <img src="Logo.png" alt="Launch Logo" id="image">
     </div>
     
+    
 
-    <div id="progress-container">
-        <div class="progress-section">
-            <span class="color-label" id="color-label-1"></span>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-bar-1"></div>
-                <span class="timer" id="timer-1">00:00</span>
+    <div id="wrapper">
+        <div id="box-container-previous">
+            <div id="box-label-previous">PREVIOUS COLOR</div>
+            <div id="box-previous">Content</div>
+        </div>
+    
+        <div id="progress-container">
+            <div class="progress-section">
+                <span class="color-label" id="color-label-1"></span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar-1"></div>
+                    <span class="timer" id="timer-1">00:00</span>
+                </div>
+            </div>
+            <div class="progress-section">
+                <span class="color-label" id="color-label-2"></span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar-2"></div>
+                    <span class="timer" id="timer-2">00:00</span>
+                </div>
+            </div>
+            <div class="progress-section">
+                <span class="color-label" id="color-label-3"></span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar-3"></div>
+                    <span class="timer" id="timer-3">00:00</span>
+                </div>
             </div>
         </div>
-        <div class="progress-section">
-            <span class="color-label" id="color-label-2"></span>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-bar-2"></div>
-                <span class="timer" id="timer-2">00:00</span>
-            </div>
-        </div>
-        <div class="progress-section">
-            <span class="color-label" id="color-label-3"></span>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-bar-3"></div>
-                <span class="timer" id="timer-3">00:00</span>
-            </div>
+    
+        <div id="box-container-next">
+            <div id="box-label-next">LATER COLOR</div>
+            <div id="box-next">Content</div>
         </div>
     </div>
+    
 
     <div id="local-time-container"></div>
+
+    <video id="scheduled-video" src="./safety-video.mp4" type="video/mp4" preload="auto" muted></video>
 
     <!-- Audio elements for color-specific and general playback -->
 <audio id="audio-black" src="BLACK.mp3" type="audio/mp3" preload="auto"></audio>

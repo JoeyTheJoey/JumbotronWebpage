@@ -29,17 +29,57 @@ body {
 }
 
 #progress-container {
-    position: fixed;
-    top: 49%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%; /* Utilize majority of viewport width */
-    max-width: 800px; /* Limit max width for larger screens */
+    position: relative; /* Change from fixed to relative positioning */
+    top: 0; /* Reset top position */
+    left: 0; /* Reset left position */
+    transform: none; /* Remove transform */
+    width: 50%; /* Reset width */
+    max-width: none; /* Reset max-width */
+    padding: 0; /* Reset padding */
+    gap: 15px; /* Retain gap */
+}
+
+#wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ensure wrapper takes full viewport height */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
+}
+
+#box-container-previous, #box-container-next {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    gap: 15px; /* Increase gap for clearer separation */
+    margin: 0 100px 0 100px; /* Space between the boxes and progress container */
+    z-index: 1000;
+}
+
+#box-label-previous, #box-label-next {
+    font-family: "futura-pt-bold", sans-serif; /* Use the same font */
+    font-weight: 700;
+    font-style: normal;
+    font-size: 24px; /* Adjust font size as needed */
+    color: white; /* Ensure visibility against the background */
+    margin-bottom: 10px; /* Space between the label and the box */
+    text-align: center;
+}
+
+#box-previous, #box-next {
+    width: 200px;
+    height: 200px;
+    background-color: #f0f0f0;
+    border: solid white 2px;
+    border-radius: 50px;
+    display: flex; /* Use flexbox to center content */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    font-family: "futura-pt-bold", sans-serif; /* Use the same font */
+    font-weight: 700;
+    font-style: normal;
+    font-size: 36px; /* Adjust font size as needed */
+    color: white; /* Ensure text is visible against the background */
+    text-align: center; /* Center text */
 }
 
 .progress-section {
@@ -93,6 +133,24 @@ body {
     color: white; /* Ensure visibility against the background */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75); /* Horizontal offset, vertical offset, blur radius, color */
 }
+#scheduled-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the video covers the entire screen */
+    display: none; /* Hide the video initially */
+    z-index: 1500; /* Ensure it's above the wrapper but below the logo and time */
+    opacity: 0;
+    animation: fadeIn 1s forwards; /* Fade-in effect */
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
 
 #local-time-container {
     position: fixed;
@@ -104,7 +162,8 @@ body {
     font-family: "futura-pt-bold", sans-serif;
     font-weight: 700;
     font-style: normal;
-    z-index: 1000; /* Ensure it's visible above other elements */
+    z-index: 2000; /* Ensure it's visible above other elements */
+    filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.466));
 }
 
 .background-black { background-color: #000; }
