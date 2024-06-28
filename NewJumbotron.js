@@ -259,10 +259,10 @@ document.addEventListener('DOMContentLoaded', function () {
         function hideVideo() {
             video.style.display = 'none';
             console.log('Scheduled video hidden');
-            setTimeout(playVideo, 30000); // Schedule the next playback after 30 seconds for testing
+            setTimeout(playVideo, 20 * 60 * 1000); // Schedule the next playback after 20 minutes for testing
         }
         video.addEventListener('ended', hideVideo);
-        setTimeout(playVideo, 30000); // Schedule the first playback after 30 seconds for testing
+        setTimeout(playVideo, 20 * 60 * 1000); // Schedule the first playback after 20 minutes for testing
     }
 
     displayLocalTime();

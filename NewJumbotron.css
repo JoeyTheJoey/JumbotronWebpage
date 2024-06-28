@@ -4,39 +4,50 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow: hidden;
     position: relative;
     background: #333; /* Assuming a dark theme; adjust as necessary */
+    background: url('./JumbotronBackgroundImage.png') no-repeat center center fixed; /* Add your background image here */
+    background-size: cover; /* Ensure the background image covers the entire screen */
 }
 
 #image-container {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    position: fixed;
-    top: 1.5%; /* Adjusted for better visibility */
+    position: absolute;
+    top: calc(2vw); /* Adjust this value to fit inside the top green-bordered shape */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000; /* Ensure it's above other elements */
+    z-index: 1000;
 }
 
 #image {
-    width: 75vw; /* Adjusts width to 50% of the viewport width */
-    max-width: 20rem; /* Ensures the image does not exceed a width of 300px */
+    width: 20vw; /* Adjust the width to fit within the top shape */
+    max-width: 500px; /* Ensures the image does not exceed a width of 200px */
     height: auto; /* Maintains the aspect ratio */
-    margin: 0 auto; /* Centers the image and removes negative margin */
-    margin-top: 10px;;
 }
 
+#local-time-container {
+    position: absolute;
+    bottom: calc(1vw); /* Adjust this value to fit inside the bottom green-bordered shape */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 7vw; /* Use viewport width units for font size */
+    color: white;
+    font-family: "futura-pt-bold", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    z-index: 2000; /* Ensure it's visible above other elements */
+    filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.466));
+}
+
+/* Progress bar container */
 #progress-container {
-    position: relative; /* Change from fixed to relative positioning */
-    top: 0; /* Reset top position */
-    left: 0; /* Reset left position */
-    transform: none; /* Remove transform */
-    width: 50%; /* Reset width */
-    max-width: none; /* Reset max-width */
-    padding: 0; /* Reset padding */
-    gap: 15px; /* Retain gap */
+    position: relative;
+    width: 100%;
+    max-width: 80%; /* Adjust as necessary */
+    margin: 0 auto; /* Center the container */
+    padding: 0;
+    gap: 15px;
 }
 
 #wrapper {
@@ -51,17 +62,17 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 100px 0 100px; /* Space between the boxes and progress container */
+    margin: 0 100px;
     z-index: 1000;
 }
 
 #box-label-previous, #box-label-next {
-    font-family: "futura-pt-bold", sans-serif; /* Use the same font */
+    font-family: "futura-pt-bold", sans-serif;
     font-weight: 700;
     font-style: normal;
-    font-size: 24px; /* Adjust font size as needed */
-    color: white; /* Ensure visibility against the background */
-    margin-bottom: 10px; /* Space between the label and the box */
+    font-size: 24px;
+    color: white;
+    margin-bottom: 10px;
     text-align: center;
 }
 
@@ -71,19 +82,19 @@ body {
     background-color: #f0f0f0;
     border: solid white 2px;
     border-radius: 50px;
-    display: flex; /* Use flexbox to center content */
-    align-items: center; /* Center content vertically */
-    justify-content: center; /* Center content horizontally */
-    font-family: "futura-pt-bold", sans-serif; /* Use the same font */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "futura-pt-bold", sans-serif;
     font-weight: 700;
     font-style: normal;
-    font-size: 36px; /* Adjust font size as needed */
-    color: white; /* Ensure text is visible against the background */
-    text-align: center; /* Center text */
+    font-size: 36px;
+    color: white;
+    text-align: center;
 }
 
 .progress-section {
-    width: 100%; /* Ensure section uses full container width */
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -94,18 +105,18 @@ body {
     font-family: "futura-pt-bold", sans-serif;
     font-weight: 700;
     font-style: normal;
-    font-size: 36px; /* Adjusted for consistency */
-    color: white; /* Ensure visibility against the background */
+    font-size: 36px;
+    color: white;
 }
 
 .progress-bar-container {
-    display: flex; /* Use flexbox to layout progress bar and timer */
-    align-items: center; /* Center items vertically */
+    display: flex;
+    align-items: center;
     width: 100%;
-    padding-right: 10px; /* Provide space for the timer */
-    background-color: rgba(64, 64, 64, 0.5); /* Background of the container for visibility */
+    padding-right: 10px;
+    background-color: rgba(64, 64, 64, 0.5);
     border-radius: 5px;
-    position: relative; /* Positioning context for absolute positioning inside */
+    position: relative;
     overflow: hidden;
 }
 
@@ -116,54 +127,41 @@ body {
     align-items: center;
     justify-content: center;
     color: #FFF;
-    background-color: #000; /* Initial background color, will be overwritten by JS */
-    width: 100%; /* Initial width, will be dynamically adjusted by JS */
+    background-color: #000;
+    width: 100%;
 }
 
 .timer {
-    margin-left: auto; /* Push the timer to the right */
-    padding: 0 10px; /* Spacing */
+    margin-left: auto;
+    padding: 0 10px;
     white-space: nowrap;
-    position: absolute; /* Position the timer to stick to the right of the container */
+    position: absolute;
     right: 0;
     font-family: "futura-pt-bold", sans-serif;
     font-weight: 700;
     font-style: normal;
-    font-size: 56px; /* Adjusted for consistency */
-    color: white; /* Ensure visibility against the background */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75); /* Horizontal offset, vertical offset, blur radius, color */
+    font-size: 56px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
 }
+
 #scheduled-video {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensure the video covers the entire screen */
-    display: none; /* Hide the video initially */
-    z-index: 1500; /* Ensure it's above the wrapper but below the logo and time */
+    object-fit: cover;
+    display: none;
+    z-index: 1500;
     opacity: 0;
-    animation: fadeIn 1s forwards; /* Fade-in effect */
+    animation: fadeIn 1s forwards;
 }
 
 @keyframes fadeIn {
     to {
         opacity: 1;
     }
-}
-
-#local-time-container {
-    position: fixed;
-    bottom: -1%;
-    width: 100%;
-    text-align: center;
-    font-size: 8vw; /* Use viewport width units for font size */
-    color: white; /* White text color */
-    font-family: "futura-pt-bold", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    z-index: 2000; /* Ensure it's visible above other elements */
-    filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.466));
 }
 
 .background-black { background-color: #000; }
