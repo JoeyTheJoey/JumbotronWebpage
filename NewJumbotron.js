@@ -120,15 +120,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 boxPrevious.style.backgroundColor = previousColor;
                 boxPrevious.textContent = previousColor.toUpperCase();
             }
-
-            if (index === 2) {
-                const currentIndex = etSchedule.findIndex(e => e.color.toLowerCase() === session.color.toLowerCase());
-                const nextIndex = (currentIndex + 1) % etSchedule.length;
-                const nextColor = etSchedule[nextIndex].color.toLowerCase();
-                const boxNext = document.getElementById('box-next');
-                boxNext.style.backgroundColor = nextColor;
-                boxNext.textContent = nextColor.toUpperCase();
-            }
         });
     }
 
