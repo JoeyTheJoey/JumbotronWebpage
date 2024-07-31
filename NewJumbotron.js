@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     scheduleAudioPlay();
-    scheduleVideoPlay();
 
     const etSchedule = [
         { color: 'black', etTimes: ['10:30', '13:00', '15:30', '18:00', '20:30', '23:00'] },
@@ -85,32 +84,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let currentUrgentColor = '';
     let previousPlayedColor = '';
+    let videoPlayTimeout;
 
     function updateProgressBars(resetTimes) {
         resetTimes.sort((a, b) => a.remainingTime - b.remainingTime);
-
+    
         resetTimes.slice(0, 3).forEach((session, index) => {
             const progressBar = document.getElementById(`progress-bar-${index + 1}`);
             const timer = document.getElementById(`timer-${index + 1}`);
             const colorLabel = document.getElementById(`color-label-${index + 1}`);
-
+    
             if (!progressBar || !timer || !colorLabel) {
                 console.error("One or more elements couldn't be found for", session.color);
                 return;
             }
-
+    
             const totalDuration = 45 * 60 * 1000;
             const remainingTimeInMilliseconds = session.remainingTime;
-            const widthPercentage = 100 * (remainingTimeInMilliseconds / totalDuration);
-
+            const widthPercentage = Math.max(0, 100 * (remainingTimeInMilliseconds / totalDuration));
+    
             progressBar.style.width = `${widthPercentage}%`;
             progressBar.className = `progress-bar background-${session.color.toLowerCase()}`;
-
+    
             colorLabel.textContent = session.color.toUpperCase();
             const minutes = Math.floor(remainingTimeInMilliseconds / (60 * 1000));
             const seconds = Math.floor((remainingTimeInMilliseconds % (60 * 1000)) / 1000);
             timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
+    
             if (index === 0) {
                 currentUrgentColor = session.color.toLowerCase();
                 const currentIndex = etSchedule.findIndex(e => e.color.toLowerCase() === session.color.toLowerCase());
@@ -120,9 +120,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 boxPrevious.style.backgroundColor = previousColor;
                 boxPrevious.textContent = previousColor.toUpperCase();
             }
+    
+            // Check if remaining time is less than 1 second
+            if (remainingTimeInMilliseconds < 1000) {
+                // Clear any existing timeout
+                if (videoPlayTimeout) {
+                    clearTimeout(videoPlayTimeout);
+                }
+                // Set new timeout to play video 5 minutes later
+                videoPlayTimeout = setTimeout(() => {
+                    playScheduledVideo();
+                }, 5 * 60 * 1000);
+            }
         });
     }
-
+    
+    function playScheduledVideo() {
+        const video = document.getElementById('scheduled-video');
+        video.style.display = 'block';
+        video.play().then(() => {
+            console.log('Playing scheduled video');
+        }).catch(error => {
+            console.error('Failed to play scheduled video:', error);
+        });
+        video.addEventListener('ended', () => {
+            video.style.display = 'none';
+            console.log('Scheduled video hidden');
+            videoPlayTimeout = null; // Reset the timeout variable after video ends
+        });
+    }
+    
     function timeUntilNextQuarterHour() {
         const now = new Date();
         const minutes = now.getMinutes();
@@ -235,25 +262,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             console.warn("Time container not found.");
         }
-    }
-
-    function scheduleVideoPlay() {
-        const video = document.getElementById('scheduled-video');
-        function playVideo() {
-            video.style.display = 'block';
-            video.play().then(() => {
-                console.log('Playing scheduled video');
-            }).catch(error => {
-                console.error('Failed to play scheduled video:', error);
-            });
-        }
-        function hideVideo() {
-            video.style.display = 'none';
-            console.log('Scheduled video hidden');
-            setTimeout(playVideo, 20 * 60 * 1000); // Schedule the next playback after 20 minutes for testing
-        }
-        video.addEventListener('ended', hideVideo);
-        setTimeout(playVideo, 20 * 60 * 1000); // Schedule the first playback after 20 minutes for testing
     }
 
     displayLocalTime();
